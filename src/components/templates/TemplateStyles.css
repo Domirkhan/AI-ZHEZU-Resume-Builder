@@ -1,0 +1,272 @@
+.template {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1F2937;
+  line-height: 1.6;
+}
+
+.template-header {
+  padding: 40px;
+}
+
+.template-content {
+  padding: 0 40px 40px;
+}
+
+.name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #111827;
+}
+
+.position {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  color: #4B5563;
+}
+
+.contacts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: #6B7280;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.section-content {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.text-content {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.text-content.preserve-lines {
+  white-space: pre-line;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tag {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.modern-template .modern-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.modern-template .name,
+.modern-template .position {
+  color: white;
+}
+
+.modern-template .contacts {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.modern-template .section-title {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.modern-skill {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+
+.professional-template {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 297mm;
+}
+
+.template-sidebar {
+  padding: 40px 24px;
+}
+
+.professional-sidebar {
+  background: #1F2937;
+  color: white;
+}
+
+.sidebar-section {
+  margin-bottom: 32px;
+}
+
+.sidebar-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.contact-item {
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.contact-item strong {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skill-item {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.template-main {
+  padding: 40px;
+}
+
+.main-header {
+  margin-bottom: 32px;
+}
+
+.professional-main .section-title {
+  color: #0891B2;
+  border-bottom-color: #0891B2;
+}
+
+.creative-template .creative-header {
+  background: linear-gradient(135deg, #EC4899 0%, #F97316 100%);
+  color: white;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.creative-template .name,
+.creative-template .position {
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.header-decoration {
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.creative-content {
+  padding: 32px 40px 40px;
+}
+
+.contact-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #FEF2F2;
+  border-radius: 8px;
+}
+
+.contact-bar .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #991B1B;
+}
+
+.contact-bar .contact-item svg {
+  width: 18px;
+  height: 18px;
+  color: #DC2626;
+}
+
+.creative-template .section-title {
+  color: #EC4899;
+  border-bottom-color: #EC4899;
+}
+
+.creative-skill {
+  background: #FCE7F3;
+  color: #BE185D;
+  border: 1px solid #F9A8D4;
+}
+
+.minimal-template .minimal-header {
+  border-bottom: 3px solid #111827;
+  padding-bottom: 24px;
+}
+
+.minimal-template .name {
+  font-size: 2.25rem;
+}
+
+.minimal-template .position {
+  font-size: 1.25rem;
+}
+
+.minimal-contacts {
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.minimal-content {
+  padding-top: 32px;
+}
+
+.minimal-title {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #111827;
+}
+
+@media print {
+  .template {
+    page-break-inside: avoid;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+}
