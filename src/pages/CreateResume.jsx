@@ -1,27 +1,30 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './CreateResume.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./CreateResume.css";
+import { apiUrl } from "../config";
 
 function CreateResume({ userData, setUserData, setAiRecommendations }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(userData || {
-    fullName: '',
-    position: '',
-    education: '',
-    experience: '',
-    skills: '',
-    achievements: '',
-    phone: '',
-    email: '',
-    location: ''
-  });
+  const [formData, setFormData] = useState(
+    userData || {
+      fullName: "",
+      position: "",
+      education: "",
+      experience: "",
+      skills: "",
+      achievements: "",
+      phone: "",
+      email: "",
+      location: "",
+    }
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -29,126 +32,148 @@ function CreateResume({ userData, setUserData, setAiRecommendations }) {
     return {
       resumeImprovements: [
         'Добавьте конкретные метрики в описание достижений (например, "увеличил продажи на 30%")',
-        'Используйте активные глаголы для описания опыта работы',
-        'Структурируйте информацию по принципу от более важного к менее важному',
-        'Добавьте ссылки на портфолио или профессиональные социальные сети'
+        "Используйте активные глаголы для описания опыта работы",
+        "Структурируйте информацию по принципу от более важного к менее важному",
+        "Добавьте ссылки на портфолио или профессиональные социальные сети",
       ],
       skillsDevelopment: [
-        'Рекомендуем изучить современные инструменты автоматизации',
-        'Обратите внимание на развитие soft skills: коммуникация и работа в команде',
-        'Рассмотрите возможность получения профессиональных сертификатов',
-        'Участвуйте в профессиональных сообществах и мероприятиях'
+        "Рекомендуем изучить современные инструменты автоматизации",
+        "Обратите внимание на развитие soft skills: коммуникация и работа в команде",
+        "Рассмотрите возможность получения профессиональных сертификатов",
+        "Участвуйте в профессиональных сообществах и мероприятиях",
       ],
       careerRecommendations: [
-        data.position || 'Менеджер проектов',
-        'Бизнес-аналитик',
-        'Руководитель отдела',
-        'Консультант'
+        data.position || "Менеджер проектов",
+        "Бизнес-аналитик",
+        "Руководитель отдела",
+        "Консультант",
       ],
-      summary: `На основе вашего опыта и навыков, вы имеете сильную базу для позиции ${data.position || 'специалиста'}. Ваши навыки хорошо подходят для карьерного роста в выбранной области.`
+      summary: `На основе вашего опыта и навыков, вы имеете сильную базу для позиции ${
+        data.position || "специалиста"
+      }. Ваши навыки хорошо подходят для карьерного роста в выбранной области.`,
     };
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    // Валидация обязательных полей
-    const requiredFields = ['fullName', 'position', 'education', 'experience', 'skills', 'email', 'phone'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
-    
-    if (missingFields.length > 0) {
-      alert(`Пожалуйста, заполните следующие обязательные поля: ${missingFields.join(', ')}`);
-      setLoading(false);
-      return;
-    }
+    try {
+      // Валидация обязательных полей
+      const requiredFields = [
+        "fullName",
+        "position",
+        "education",
+        "experience",
+        "skills",
+        "email",
+        "phone",
+      ];
+      const missingFields = requiredFields.filter((field) => !formData[field]);
 
-    console.log("📤 Отправляем данные на сервер:", formData);
-
-    const resp = await fetch("http://localhost:4000/api/analyze", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!resp.ok) {
-      throw new Error(`HTTP error! status: ${resp.status}`);
-    }
-
-    const result = await resp.json();
-
-    if (result.error) {
-      throw new Error(result.message || "Ошибка при обработке данных");
-    }
-
-    // Проверяем структуру ответа
-    if (!result.data?.improvedData) {
-      throw new Error("Некорректная структура ответа от сервера");
-    }
-
-    // Формируем рекомендации для отображения
-    setAiRecommendations({
-      resumeImprovements: result.data.recommendations || [],
-      skillsDevelopment: result.data.skillsDevelopment || [
-        "Рекомендуем изучить современные инструменты в вашей области",
-        "Развивайте навыки коммуникации и работы в команде",
-        "Осваивайте новые технологии и методологии",
-        "Получите профессиональные сертификаты"
-      ],// Можно добавить из ответа AI, если есть
-      careerRecommendations: result.data.careerPaths || [],
-      summary: result.data.improvedData.summary || "",
-      data: result.data // Сохраняем все улучшенные данные
-    });
-
-    // Обновляем данные пользователя
-    setUserData({
-      ...formData,
-      ...result.data.improvedData
-    });
-
-    // Переходим к выбору шаблона
-    navigate("/templates");
-
-  } catch (error) {
-    console.error("Ошибка при обработке резюме:", error);
-    
-    // Показываем пользователю понятное сообщение об ошибке
-    alert(
-      "Произошла ошибка при анализе резюме. " +
-      "Пожалуйста, проверьте подключение к интернету и попробуйте снова."
-    );
-
-    // Устанавливаем базовые рекомендации в случае ошибки
-    setAiRecommendations({
-      resumeImprovements: ["Не удалось получить рекомендации от AI. Попробуйте позже."],
-      skillsDevelopment: [],
-      careerRecommendations: [formData.position || "Специалист"],
-      summary: "Временно недоступно. Попробуйте обновить страницу.",
-      data: {
-        improvedData: formData // Используем оригинальные данные
+      if (missingFields.length > 0) {
+        alert(
+          `Пожалуйста, заполните следующие обязательные поля: ${missingFields.join(
+            ", "
+          )}`
+        );
+        setLoading(false);
+        return;
       }
-    });
 
-    // Сохраняем оригинальные данные
-    setUserData(formData);
+      console.log("📤 Отправляем данные на сервер:", formData);
 
-  } finally {
-    setLoading(false);
-  }
-};
+      const resp = await fetch(`${apiUrl}/api/analyze`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
+      if (!resp.ok) {
+        throw new Error(`HTTP error! status: ${resp.status}`);
+      }
 
+      const result = await resp.json();
+
+      if (result.error) {
+        throw new Error(result.message || "Ошибка при обработке данных");
+      }
+
+      // Проверяем структуру ответа
+      if (!result.data?.improvedData) {
+        throw new Error("Некорректная структура ответа от сервера");
+      }
+
+      // Формируем рекомендации для отображения
+      setAiRecommendations({
+        resumeImprovements: result.data.recommendations || [],
+        skillsDevelopment: result.data.skillsDevelopment || [
+          "Рекомендуем изучить современные инструменты в вашей области",
+          "Развивайте навыки коммуникации и работы в команде",
+          "Осваивайте новые технологии и методологии",
+          "Получите профессиональные сертификаты",
+        ], // Можно добавить из ответа AI, если есть
+        careerRecommendations: result.data.careerPaths || [],
+        summary: result.data.improvedData.summary || "",
+        data: result.data, // Сохраняем все улучшенные данные
+      });
+
+      // Обновляем данные пользователя
+      setUserData({
+        ...formData,
+        ...result.data.improvedData,
+      });
+
+      // Переходим к выбору шаблона
+      navigate("/templates");
+    } catch (error) {
+      console.error("Ошибка при обработке резюме:", error);
+
+      // Показываем пользователю понятное сообщение об ошибке
+      alert(
+        "Произошла ошибка при анализе резюме. " +
+          "Пожалуйста, проверьте подключение к интернету и попробуйте снова."
+      );
+
+      // Устанавливаем базовые рекомендации в случае ошибки
+      setAiRecommendations({
+        resumeImprovements: [
+          "Не удалось получить рекомендации от AI. Попробуйте позже.",
+        ],
+        skillsDevelopment: [],
+        careerRecommendations: [formData.position || "Специалист"],
+        summary: "Временно недоступно. Попробуйте обновить страницу.",
+        data: {
+          improvedData: formData, // Используем оригинальные данные
+        },
+      });
+
+      // Сохраняем оригинальные данные
+      setUserData(formData);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="create-resume-page">
       <div className="create-content">
-        <button className="back-button" onClick={() => navigate('/')}>
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <button className="back-button" onClick={() => navigate("/")}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12H5m0 0l7 7m-7-7l7-7"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           Назад
         </button>
@@ -302,8 +327,18 @@ const handleSubmit = async (e) => {
               ) : (
                 <>
                   <span>Проанализировать с AI</span>
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </>
               )}

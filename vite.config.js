@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/AI-ZHEZU-Resume-Builder/',
+  // For Vercel hosting the site at root, use '/' as base (or omit).
+  base: '/',
   server: {
     proxy: {
       '/api': {
