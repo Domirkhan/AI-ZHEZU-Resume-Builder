@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateResume.css";
-import { apiUrl } from "../config";
 
 function CreateResume({ userData, setUserData, setAiRecommendations }) {
   const navigate = useNavigate();
@@ -54,12 +53,33 @@ function CreateResume({ userData, setUserData, setAiRecommendations }) {
     };
   };
 
+  const validateField = (name, value) => {
+    if (!value) return false;
+
+    switch (name) {
+      case "email":
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      case "phone":
+        return /^[\d\s+()-]+$/.test(value);
+      case "fullName":
+        return value.length >= 5;
+      case "position":
+        return value.length >= 3;
+      case "education":
+      case "experience":
+      case "skills":
+        return value.length >= 10;
+      default:
+        return true;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Валидация обязательных полей
+      // Улучшенная валидация
       const requiredFields = [
         "fullName",
         "position",
@@ -69,13 +89,27 @@ function CreateResume({ userData, setUserData, setAiRecommendations }) {
         "email",
         "phone",
       ];
-      const missingFields = requiredFields.filter((field) => !formData[field]);
+      const invalidFields = requiredFields.filter(
+        (field) => !validateField(field, formData[field])
+      );
 
-      if (missingFields.length > 0) {
+      if (invalidFields.length > 0) {
+        const fieldMessages = {
+          email: "Введите корректный email",
+          phone: "Введите корректный номер телефона",
+          fullName: "ФИО должно содержать не менее 5 символов",
+          position: "Должность должна содержать не менее 3 символов",
+          education: "Добавьте более подробное описание образования",
+          experience: "Добавьте более подробное описание опыта",
+          skills: "Укажите больше навыков",
+        };
+
+        const errorMessages = invalidFields.map(
+          (field) => fieldMessages[field]
+        );
         alert(
-          `Пожалуйста, заполните следующие обязательные поля: ${missingFields.join(
-            ", "
-          )}`
+          "Пожалуйста, исправьте следующие ошибки:\n\n" +
+            errorMessages.join("\n")
         );
         setLoading(false);
         return;
@@ -83,13 +117,16 @@ function CreateResume({ userData, setUserData, setAiRecommendations }) {
 
       console.log("📤 Отправляем данные на сервер:", formData);
 
-      const resp = await fetch(`${apiUrl}/api/analyze`, {
+      const apiUrl = import.meta.env.VITE_API_URL || "/api/analyze";
+      const resp = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "Cache-Control": "no-cache",
         },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
 
       if (!resp.ok) {
