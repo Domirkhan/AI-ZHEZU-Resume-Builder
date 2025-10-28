@@ -84,19 +84,36 @@ ${data.achievements ? `Достижения: ${data.achievements}` : ''}
     if (!apiResponse.ok) {
       const text = await apiResponse.text();
       console.error('OpenRouter API error', apiResponse.status, text);
-      return res.status(502).json({ error: true, message: 'Upstream API error' });
+      return res.status(502).json({ error: true, message: 'Upstream API error', status: apiResponse.status, details: text });
     }
 
     const result = await apiResponse.json();
 
-    // Try to parse AI response which is expected to be JSON in string
-    const rawContent = result.choices?.[0]?.message?.content || '';
+    // Try different locations for the model's output
+    let rawContent = '';
+    if (result.choices?.[0]?.message?.content) rawContent = result.choices[0].message.content;
+    else if (result.choices?.[0]?.text) rawContent = result.choices[0].text;
+    else if (result.output_text) rawContent = result.output_text;
+
     let improvedResume;
+    // First try direct JSON parse
     try {
       improvedResume = JSON.parse(rawContent);
     } catch (err) {
-      console.error('Failed to parse AI response as JSON', rawContent);
-      return res.status(500).json({ error: true, message: 'Invalid AI response format' });
+      // If direct parse failed, try to extract a JSON object substring from the text
+      try {
+        const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          improvedResume = JSON.parse(jsonMatch[0]);
+        } else {
+          console.warn('No JSON found in AI response. Returning raw content for debugging.');
+          console.error('Raw AI response:', rawContent);
+          return res.status(500).json({ error: true, message: 'Invalid AI response format', raw: rawContent });
+        }
+      } catch (err2) {
+        console.error('Failed to extract/parse JSON from AI response', err2, rawContent);
+        return res.status(500).json({ error: true, message: 'Invalid AI response format', parseError: err2.message, raw: rawContent });
+      }
     }
 
     // Ensure contacts exist
