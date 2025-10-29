@@ -11,17 +11,5 @@ export default defineConfig({
         secure: false
       }
     }
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router-dom'],
-          pdf: ['html2pdf.js']
-        }
-      }
-    }
   }
 })
