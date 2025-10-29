@@ -6,21 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:4000',
+        target: 'http://localhost:4000',
         changeOrigin: true,
         secure: false
-      }
-    }
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router-dom'],
-          pdf: ['html2pdf.js']
-        }
       }
     }
   }

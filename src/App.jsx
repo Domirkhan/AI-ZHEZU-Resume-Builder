@@ -1,46 +1,15 @@
-import { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import Home from "./pages/Home";
-import CreateResume from "./pages/CreateResume";
-import SelectTemplate from "./pages/SelectTemplate";
-import PreviewResume from "./pages/PreviewResume";
-import "./App.css";
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import CreateResume from './pages/CreateResume';
+import SelectTemplate from './pages/SelectTemplate';
+import PreviewResume from './pages/PreviewResume';
+import './App.css';
 
 function App() {
-  const [userData, setUserData] = useState(() => {
-    const saved = localStorage.getItem("userData");
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  const [aiRecommendations, setAiRecommendations] = useState(() => {
-    const saved = localStorage.getItem("aiRecommendations");
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  const [selectedTemplate, setSelectedTemplate] = useState(() => {
-    const saved = localStorage.getItem("selectedTemplate");
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  // Сохраняем данные в localStorage при изменении
-  useEffect(() => {
-    if (userData) localStorage.setItem("userData", JSON.stringify(userData));
-    if (aiRecommendations)
-      localStorage.setItem(
-        "aiRecommendations",
-        JSON.stringify(aiRecommendations)
-      );
-    if (selectedTemplate)
-      localStorage.setItem(
-        "selectedTemplate",
-        JSON.stringify(selectedTemplate)
-      );
-  }, [userData, aiRecommendations, selectedTemplate]);
+  const [userData, setUserData] = useState(null);
+  const [aiRecommendations, setAiRecommendations] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   return (
     <Router>
@@ -59,32 +28,23 @@ function App() {
         <Route
           path="/templates"
           element={
-            userData ? (
-              <SelectTemplate
-                userData={userData}
-                aiRecommendations={aiRecommendations}
-                setSelectedTemplate={setSelectedTemplate}
-              />
-            ) : (
-              <Navigate to="/create" replace />
-            )
+            <SelectTemplate
+              userData={userData}
+              aiRecommendations={aiRecommendations}
+              setSelectedTemplate={setSelectedTemplate}
+            />
           }
         />
         <Route
           path="/preview"
           element={
-            userData && selectedTemplate ? (
-              <PreviewResume
-                userData={userData}
-                selectedTemplate={selectedTemplate}
-                aiRecommendations={aiRecommendations}
-              />
-            ) : (
-              <Navigate to="/create" replace />
-            )
+            <PreviewResume
+              userData={userData}
+              selectedTemplate={selectedTemplate}
+              aiRecommendations={aiRecommendations}
+            />
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
