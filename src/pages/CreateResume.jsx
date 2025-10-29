@@ -66,7 +66,8 @@ const handleSubmit = async (e) => {
 
     console.log("📤 Отправляем данные на сервер:", formData);
 
-    const resp = await fetch("http://localhost:4000/api/analyze", {
+    // Используем относительный путь, чтобы Vite проксировал запрос на /api -> http://localhost:4000 в режиме разработки
+    const resp = await fetch("/api/analyze", {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
