@@ -66,8 +66,14 @@ const handleSubmit = async (e) => {
 
     console.log("📤 Отправляем данные на сервер:", formData);
 
-    // Используем относительный путь, чтобы Vite проксировал запрос на /api -> http://localhost:4000 в режиме разработки
-    const resp = await fetch("/api/analyze", {
+    // Базовый URL API: в dev оставляем пустым чтобы использовать Vite proxy ('/api' -> http://localhost:4000),
+    // в продакшене задайте VITE_API_BASE_URL в окружении (например: https://api.example.com)
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+    const endpoint = API_BASE
+      ? `${API_BASE.replace(/\/\/$/, '')}/api/analyze`
+      : '/api/analyze';
+
+    const resp = await fetch(endpoint, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",

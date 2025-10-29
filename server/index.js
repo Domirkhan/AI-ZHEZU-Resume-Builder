@@ -3,10 +3,11 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'http://aizhezu-resume-builder.vercel.app'}));
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 4000;
