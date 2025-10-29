@@ -117,7 +117,7 @@ function CreateResume({ userData, setUserData, setAiRecommendations }) {
 
       console.log("📤 Отправляем данные на сервер:", formData);
 
-      const apiUrl = `${import.meta.env.VITE_API_URL || '/api'}/analyze`;
+      const apiUrl = `/api/analyze`;
       const resp = await fetch(apiUrl, {
         method: "POST",
         headers: {
